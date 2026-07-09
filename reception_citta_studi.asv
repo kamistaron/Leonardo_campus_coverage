@@ -1,0 +1,81 @@
+clear; clc; close all;
+
+%% 1. Open 3D viewer with Milan buildings
+viewer = siteviewer("Buildings", "map.osm", "Basemap", "openstreetmap");
+
+%% 2. Load antennas from CSV
+towers = readtable("Milan_towers.csv");
+
+% Map MNC to operator name
+mnc_map = containers.Map([1, 10, 50, 88, 99], ...
+    {'TIM', 'Vodafone', 'Iliad', 'WindTre', 'WindTre'});
+
+% Map radio type to frequency (Hz) — realistic Italian band assignments
+freq_map = containers.Map({'UMTS','LTE','NR'}, ...
+    {2100e6, 1800e6, 3500e6});
+
+%% 3. Build txsite array from all towers
+fprintf("Building tx sites from %d towers...\n", height(towers));
+
+txArray = txsite.empty;
+for i = 1:height(towers)
+    radio = string(towers.radio(i));
+
+    % Skip if radio type not in our frequency map
+    if ~isKey(freq_map, radio)
+        continue;
+    end
+
+    freq = freq_map(radio);
+
+    txArray(end+1) = txsite( ...
+        "Latitude",              towers.lat(i), ...
+        "Longitude",             towers.lon(i), ...
+        "AntennaHeight",         25, ...          % estimated urban height
+        "TransmitterFrequency",  freq, ...
+        "TransmitterPower",      10, ...          % 10W typical BTS power
+        "Name",                  radio + " " + i);
+end
+
+fprintf("Loaded %d tx sites.\n", length(txArray));
+
+% Show all antennas on the map
+show(txArray(1:3), "Map", viewer, "ShowAntennaHeight", false);
+
+%% 4. Define the ray tracing propagation model
+pm = propagationModel("raytracing", ...
+    "Method",              "sbr", ...
+    "MaxNumReflections",   4, ...
+    "MaxNumDiffractions",  1, ...
+    "AngularSeparation",   "high");
+
+%% 5. Generate color-graded signal strength coverage map
+% This computes received power at a grid of points across your OSM area
+% using ray tracing from ALL loaded transmitters — this is the heavy step,
+% runtime scales with number of tx sites and grid resolution
+
+fprintf("Computing coverage map — this may take several minutes...\n");
+
+% Define receiver height (street level)
+rxHeight = 1.5;
+
+% Resolution: "high" = finer grid but much slower
+% Start with "low" or "medium" to test, then increase
+coverage(txArray(1:3), ...
+    "PropagationModel",  pm, ...
+    "ReceiverAntennaHeight",    rxHeight, ...
+    "Resolution",        30, ...   % try "low" first for speed
+    "ColorLimits",       [-120, -60], ...  % dBm range: -60 strong, -120 weak
+    "Colormap",          jet, ...
+    "Map",               viewer);
+
+fprintf("Coverage map complete.\n");
+
+
+
+rxSite1 = rxsite("Latitude", 45.480978, "Longitude", 9.228603, "AntennaHeight", 1.5);
+rxSite2 = rxsite("Latitude", <far spot>,  "Longitude", <far spot>,  "AntennaHeight", 1.5);
+ss1 = sigstrength(rxSite1, txArray(1), pm)
+ss2 = sigstrength(rxSite2, txArray(1), pm)
+
+45.478936,9.232284
