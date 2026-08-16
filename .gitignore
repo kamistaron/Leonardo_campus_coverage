@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+**/.DS_Store
+
+# MATLAB temporary/autosave files
+*.asv
+*.m~
+*.autosave
+slprj/
+codegen/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Generated outputs (keep directory marker if desired)
+outputs/*.png
+outputs/*.csv
+outputs/*.mat
+outputs/*.txt
+
+# Editor / temporary files
+*.tmp
+*.temp
+*~

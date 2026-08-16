@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# MATLAB autosave/temp
+*.asv
+*.autosave
+*.m~
+slprj/
+codegen/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Editors/temp
+*.tmp
+*.swp
+*~
+
+# outputs/ is intentionally version-controlled for the portfolio README.
