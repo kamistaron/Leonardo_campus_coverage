@@ -1,0 +1,4 @@
+Scenario,MedianPower_dBm,P10Power_dBm,P5Power_dBm,MinimumPower_dBm,AreaBelowBaselineP10_pct,AreaBelowBaselineP10_m2,P10Improvement_dB,P5Improvement_dB,MinimumImprovement_dB,Tradeoff
+Baseline,-69.747478225935,-80.8514459351183,-83.9468540834403,-90.7197835422031,10.0099502487562,113175,0,0,0,"Existing assumed configuration"
+Relocate selected site,-69.5835734900863,-79.9580001631129,-82.5652706848457,-89.0490141443823,7.78109452736318,87975,0.893445772005421,1.38158339859456,1.67076939782075,"Requires relocation feasibility / civil changes"
+Add candidate site,-68.9320563498485,-77.7048059148816,-79.1398664066737,-84.6704924696751,1.53233830845771,17325,3.14664002023669,4.80698767676661,6.04929107252795,"Requires new site, power, backhaul and permitting"
